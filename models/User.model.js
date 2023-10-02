@@ -22,12 +22,10 @@ const userSchema = new Schema({
     default: 0,
   },
 
-  firstName: {
+  name: {
     type: String,
   },
-  lastName: {
-    type: String,
-  },
+  
   
   dateOfBirth: {
     type: Date,
