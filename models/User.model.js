@@ -18,8 +18,8 @@ const userSchema = new Schema({
   },
 
   userPermission: {
-    type: Number,
-    default: 0,
+    type: String,
+    default: 'user',
   },
 
   name: {
@@ -66,10 +66,7 @@ const userSchema = new Schema({
   mobilePhone: {
     type: String,
   },
-  
-  taxID: {
-    type: String,
-  },
+
 
 });
 
