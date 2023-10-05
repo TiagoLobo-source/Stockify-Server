@@ -9,14 +9,13 @@ const router = require("express").Router();
 
 
 router.post('/products',(req,res)=>{
-    const {title,description} = req.body
-
-    if(!title || !description){
+    const {title, description,stock, price ,imageProduct, userId} = req.body
+    if(!title || !description || !stock || !price){
         res.json({message:"Please fill in all mandetory Fields"})
         return
     }
-
-    Product.create({title:title,description:description})
+    const idOwner=userId
+    Product.create({title, description,stock, price ,imageProduct, idOwner})
     .then((newProduct)=>{
         res.json({message:"Product Successfully Created"})
     })
@@ -72,9 +71,9 @@ router.get('/products/:id',(req,res)=>{
 
 router.put('/products/:id',(req,res)=>{
     const {id} = req.params
-    const {title,description} = req.body
+    const {title, description,stock, price ,imageProduct} = req.body
     
-    Product.findByIdAndUpdate(id,{title,description},{new:true})
+    Product.findByIdAndUpdate(id,{title, description,stock, price ,imageProduct},{new:true})
     .then((updatedProduct)=>{
         res.json(updatedProduct)
     })
