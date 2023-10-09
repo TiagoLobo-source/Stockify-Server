@@ -23,6 +23,11 @@ const productSchema = new Schema(
       type: String,
     },
 
+    category: {
+      type: String,
+      enum: ["Electronics", "Clothing", "Furniture", "Books", "Other"],
+    },
+
     idOwner: {
       type: Schema.Types.ObjectId,
       reference: "User",
