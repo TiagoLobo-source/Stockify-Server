@@ -13,11 +13,14 @@ const financialRecordSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Product",
     },
+
+    
     // Transaction type
     transactionType: {
       type: String,
-      enum: ["Purchase", "Payment"],
+      enum: ["Backlog", "Sent"],
       required: true,
+      default:"Backlog"
     },
     // quantity of the transaction
     quantity: {
@@ -48,10 +51,7 @@ const financialRecordSchema = new Schema(
 
     // Total sales income of the supplier
 
-    totalSalesIncome: {
-      type: Number,
-      default: 0,
-    },
+ 
   },
 
   {

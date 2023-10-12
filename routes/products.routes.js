@@ -6,13 +6,22 @@ const router = require("express").Router();
 //POST
 
 router.post("/products", (req, res) => {
-  const { title, description, stock, price, imageProduct, userId,category } = req.body;
+  const { title, description, stock, price, imageProduct, userId, category } =
+    req.body;
   if (!title || !description || !stock || !price) {
     res.status(400).json({ message: "Please fill in all mandatory Fields" });
     return;
   }
   const idOwner = userId;
-  Product.create({ title, description, stock, price, imageProduct, idOwner, category })
+  Product.create({
+    title,
+    description,
+    stock,
+    price,
+    imageProduct,
+    idOwner,
+    category,
+  })
     .then((newProduct) => {
       res.status(400).json({ message: "Product Successfully Created" });
     })
@@ -61,11 +70,45 @@ router.get("/products/:id", (req, res) => {
 
 router.put("/products/:id", (req, res) => {
   const { id } = req.params;
-  const { title, description, stock, price, imageProduct, category } = req.body;
+  const { title, description, stock, price, imageProduct} = req.body;
+  const isApproved = false;
+  const isPassed = "pending";
 
   Product.findByIdAndUpdate(
     id,
-    { title, description, stock, price, imageProduct },
+    { title, description, stock, price, imageProduct, isPassed, isApproved },
+    { new: true }
+  )
+    .then((updatedProduct) => {
+      res.json(updatedProduct);
+    })
+    .catch((err) => {
+      res.json(err);
+    });
+});
+
+router.put("/productsapproval/:id", (req, res) => {
+  const { id } = req.params;
+  const isApproved = true;
+  const isPassed = "approved";
+
+  Product.findByIdAndUpdate(id, { isApproved, isPassed }, { new: true })
+    .then((updatedProduct) => {
+      res.json(updatedProduct);
+    })
+    .catch((err) => {
+      res.json(err);
+    });
+});
+
+router.put("/productsrefusal/:id", (req, res) => {
+  const { id } = req.params;
+  const isApproved = false;
+  const isPassed = "refused";
+  const { reasonForRefusal } = req.body;
+  Product.findByIdAndUpdate(
+    id,
+    { isApproved, isPassed, reasonForRefusal },
     { new: true }
   )
     .then((updatedProduct) => {

@@ -32,7 +32,23 @@ const productSchema = new Schema(
       type: Schema.Types.ObjectId,
       reference: "User",
     },
+
+    isApproved: {
+      type: Boolean,
+      default: false,
+    },
+
+    isPassed: {
+      type: String,
+      enum: ["approved", "refused", "pending"],
+      default: "pending",
+    },
+
+    reasonForRefusal:{
+      type: String,
+    },
   },
+
   {
     // this second object adds extra properties: createdAt and updatedAt
     timestamps: true,
