@@ -70,7 +70,7 @@ router.get("/products/:id", (req, res) => {
 
 router.put("/products/:id", (req, res) => {
   const { id } = req.params;
-  const { title, description, stock, price, imageProduct} = req.body;
+  const { title, description, stock, price, imageProduct } = req.body;
   const isApproved = false;
   const isPassed = "pending";
 
@@ -135,6 +135,26 @@ router.delete("/products/:id", (req, res) => {
     })
     .catch((err) => {
       res.json(err);
+    });
+});
+
+router.put("/cart/:id", (req, res) => {
+  const { id } = req.params;
+
+  Product.findById(id)
+    .then((product) => {
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+
+      //product.stock -= 1;
+      return product.save();
+    })
+    .then((updatedProduct) => {
+      res.json(updatedProduct);
+    })
+    .catch((err) => {
+      res.status(500).json(err);
     });
 });
 
