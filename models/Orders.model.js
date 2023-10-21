@@ -23,6 +23,11 @@ const ordersSchema = new Schema({
             type: Number,
             required: true,
           },
+          
+          idOwner: {
+            type: Schema.Types.ObjectId,
+            ref: "User", 
+          },
         },
       ],
       transactionType: {
@@ -47,6 +52,6 @@ const ordersSchema = new Schema({
 });
 
 // FinancialRecord model
-const OrdersRecord = model("OrdersRecord", ordersSchema);
+const Orders = model("Orders", ordersSchema);
 
-module.exports = OrdersRecord;
+module.exports = Orders;
