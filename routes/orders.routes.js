@@ -29,16 +29,23 @@ router.post("/orders", (req, res) => {
 });
 
 // For fetching seller orders
-router.get("/orders/products/:sellerId",  isAuthenticated,  (req, res) => {
-  const { sellerId } = req.params;
-  Orders.find({ "orders.products.idOwner": sellerId })
-    .then((orders) => {
-      res.json(orders);
-    })
-    .catch((error) => {
-      console.error("Error fetching seller orders:", error);
-      res.status(500).json({ message: "Internal Server Error" });
-    });
+router.get('/orders/products/:idOwner', (req, res) => {
+  const { userId } = req.params;
+
+
+ 
+  Orders.find({ 'orders.products.idOwner': userId }, (err, orders) => {console.log(orders)
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Server error' });
+    }
+
+    if (!orders) {
+      return res.status(404).json({ message: 'No orders found for this idOwner.' });
+    }
+
+    res.status(200).json(orders);
+  });
 });
 
 
