@@ -158,4 +158,15 @@ router.put("/cart/:id", (req, res) => {
     });
 });
 
+router.get("/productshome", (req, res) => {    
+  Product.find()
+
+    .then((allProducts) => {
+      res.json(allProducts);
+    })
+    .catch((err) => {
+      res.json(err);
+    });
+});
+
 module.exports = router;

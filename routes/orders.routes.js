@@ -30,32 +30,30 @@ router.post("/orders", (req, res) => {
 
 // For fetching seller orders
 router.get('/orders/products/:idOwner', (req, res) => {
-  const { userId } = req.params;
+  const { idOwner } = req.params;
 
+  Orders.find({ 'orders.products.idOwner': idOwner })
+    .then((orders) => {
+      if (!orders) {
+        return res.status(404).json({ message: 'No orders found for this idOwner.' });
+      }
 
- 
-  Orders.find({ 'orders.products.idOwner': userId }, (err, orders) => {console.log(orders)
-    if (err) {
+      res.status(200).json(orders);
+    })
+    .catch((err) => {
       console.error(err);
-      return res.status(500).json({ message: 'Server error' });
-    }
-
-    if (!orders) {
-      return res.status(404).json({ message: 'No orders found for this idOwner.' });
-    }
-
-    res.status(200).json(orders);
-  });
+      res.status(500).json({ message: 'Server error' });
+    });
 });
 
 
+
 // For fetching user orders
-router.get("/orders/user/:userId",  (req, res) => {
+router.get("/orders/user/:userId", (req, res) => {
   const { userId } = req.params;
 
   Orders.find({ "orders.user": userId })
     .then((orders) => {
-    
       res.json(orders);
     })
     .catch((error) => {
@@ -63,4 +61,42 @@ router.get("/orders/user/:userId",  (req, res) => {
       res.status(500).json({ message: "Internal Server Error" });
     });
 });
+
+router.delete("/orders/:id", (req, res) => {
+  const { id } = req.params;
+
+  Orders.findByIdAndRemove(id)
+    .then((deletedOrder) => {
+      res.status(200).json({ message: "Order deleted successfully" });
+    })
+    .catch((err) => {
+      console.error("Error deleting order:", err);
+      res.status(500).json({ message: "Internal Server Error" });
+    });
+});
+
+router.put('/orders/products/:orderId/mark-as-sent', (req, res) => {
+  const { orderId } = req.params;
+
+  Orders.findById(orderId)
+    .then((order) => {
+      if (!order) {
+        return res.status(404).json({ message: 'Order not found.' });
+      }
+
+      order.orders[0].transactionType = 'Sent';
+
+      return order.save() 
+        .then(() => {
+          res.status(200).json({ message: 'Order marked as Sent.' });
+        });
+    })
+    .catch((err) => {
+      console.error("Error marking order as Sent:", err);
+      res.status(500).json({ message: 'Server error' });
+    });
+});
+
+module.exports = router;
+
 module.exports = router;
