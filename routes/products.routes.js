@@ -87,14 +87,32 @@ router.get("/products/:id", (req, res) => {
 router.put("/products/:id", (req, res) => {
   const { id } = req.params;
   const { title, description, stock, price, imageProduct } = req.body;
-  const isApproved = false;
   const isPassed = "pending";
 
-  Product.findByIdAndUpdate(
-    id,
-    { title, description, stock, price, imageProduct, isPassed, isApproved },
-    { new: true }
-  )
+  Product.findById(id) // Retrieve the current product
+    .then((product) => {
+      if (product) {
+        // Check if any of the fields have changed
+        const hasFieldsChanged =
+          product.title !== title ||
+          product.description !== description ||
+          product.stock !== stock ||
+          product.price !== price ||
+          product.imageProduct !== imageProduct;
+
+      
+        const isApproved = hasFieldsChanged ? true : product.isApproved;
+
+        
+        return Product.findByIdAndUpdate(
+          id,
+          { title, description, stock, price, imageProduct, isPassed, isApproved },
+          { new: true }
+        );
+      } else {
+        throw new Error("Product not found");
+      }
+    })
     .then((updatedProduct) => {
       res.json(updatedProduct);
     })
@@ -102,6 +120,7 @@ router.put("/products/:id", (req, res) => {
       res.json(err);
     });
 });
+
 
 router.put("/productsapproval/:id", (req, res) => {
   const { id } = req.params;
