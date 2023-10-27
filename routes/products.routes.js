@@ -87,32 +87,33 @@ router.get("/products/:id", (req, res) => {
 router.put("/products/:id", (req, res) => {
   const { id } = req.params;
   const { title, description, stock, price, imageProduct } = req.body;
-  const isPassed = "pending";
 
-  Product.findById(id) // Retrieve the current product
-    .then((product) => {
-      if (product) {
-        // Check if any of the fields have changed
-        const hasFieldsChanged =
-          product.title !== title ||
-          product.description !== description ||
-          product.stock !== stock ||
-          product.price !== price ||
-          product.imageProduct !== imageProduct;
+  
+  const shouldUpdateStatus =
+    title !== undefined ||
+    description !== undefined ||
+    stock !== undefined ||
+    price !== undefined ||
+    imageProduct !== undefined;
 
-      
-        const isApproved = hasFieldsChanged ? true : product.isApproved;
+  const updateFields = {
+    title,
+    description,
+    stock,
+    price,
+    imageProduct,
+  };
 
-        
-        return Product.findByIdAndUpdate(
-          id,
-          { title, description, stock, price, imageProduct, isPassed, isApproved },
-          { new: true }
-        );
-      } else {
-        throw new Error("Product not found");
-      }
-    })
+  if (shouldUpdateStatus) {
+    updateFields.isApproved = false;
+    updateFields.isPassed = "pending";
+  }
+
+  Product.findByIdAndUpdate(
+    id,
+    updateFields,
+    { new: true }
+  )
     .then((updatedProduct) => {
       res.json(updatedProduct);
     })
